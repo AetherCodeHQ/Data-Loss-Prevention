@@ -1,26 +1,29 @@
+
 package main
 
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
-// data_loss_prevention - Prevent data exposure
-func data_loss_prevention(path string) {
-	fmt.Println("========================================")
-	fmt.Println("  Data-Loss-Prevention")
-	fmt.Println("  Prevent data exposure")
-	fmt.Println("========================================")
-	fmt.Println()
-	fmt.Println("Target:", path)
-	fmt.Println("Processing...")
-	fmt.Println("Done!")
-}
-
 func main() {
-	path := "."
+	dir := "."
 	if len(os.Args) > 1 {
-		path = os.Args[1]
+		dir = os.Args[1]
 	}
-	data_loss_prevention(path)
+	var n int
+	filepath.Walk(dir, func(p string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return nil
+		}
+		if strings.HasPrefix(info.Name(), ".") {
+			return nil
+		}
+		n++
+		fmt.Println(p)
+		return nil
+	})
+	fmt.Printf("%d file(s)\n", n)
 }
